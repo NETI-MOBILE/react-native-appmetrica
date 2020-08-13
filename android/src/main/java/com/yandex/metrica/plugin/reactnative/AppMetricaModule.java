@@ -17,7 +17,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.yandex.metrica.Revenue;
 import com.yandex.metrica.YandexMetrica;
+
+import java.util.Currency;
 
 public class AppMetricaModule extends ReactContextBaseJavaModule {
 
@@ -86,6 +89,18 @@ public class AppMetricaModule extends ReactContextBaseJavaModule {
         } else {
             YandexMetrica.reportEvent(eventName, attributes.toHashMap());
         }
+    }
+
+    @ReactMethod
+    public void reportRevenue(int price, String productID, String source) {
+        Revenue revenue = Revenue.newBuilderWithMicros(price * 1000000, Currency.getInstance("RUB"))
+                .withProductID(productID)
+                .withQuantity(1)
+                // Passing the OrderID parameter in the .withPayload(String payload) method to group purchases.
+                .withPayload("{\"source\":\""+ source +"\"}")
+                .build();
+// Sending the Revenue instance using reporter.
+        YandexMetrica.reportRevenue(revenue);
     }
 
     @ReactMethod

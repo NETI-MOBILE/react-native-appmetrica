@@ -74,6 +74,10 @@ export default {
     AppMetrica.reportError(error);
   },
 
+  reportRevenue(price: number, productID: string, source: string) {
+    AppMetrica.reportRevenue(price, productID, source);
+  },
+
   reportEvent(eventName: string, attributes: ?Object = null) {
     AppMetrica.reportEvent(eventName, attributes);
   },
