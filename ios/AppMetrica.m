@@ -103,6 +103,20 @@ RCT_EXPORT_METHOD(setUserProfileID:(NSString *)userProfileID)
     [YMMYandexMetrica setUserProfileID:userProfileID];
 }
 
+RCT_EXPORT_METHOD(reportRevenue:(nonnull NSNumber *)price:(NSString *)productID:(NSString *)source)
+{
+    NSDecimalNumber *decimalprice = [NSDecimalNumber decimalNumberWithDecimal:[price decimalValue]];
+    // Initializing the Revenue instance.
+    YMMMutableRevenueInfo *revenueInfo = [[YMMMutableRevenueInfo alloc] initWithPriceDecimal:decimalprice currency:@"RUB"];
+    revenueInfo.productID = productID;
+    revenueInfo.quantity = 1;
+    // Setting the OrderID parameter in the payload property to group purchases
+    revenueInfo.payload = @{ @"source": source };
+   [YMMYandexMetrica reportRevenue:[revenueInfo copy] onFailure:^(NSError *error) {
+        NSLog(@"Revenue error: %@", error);
+    }];
+}
+
 - (NSObject *)wrap:(NSObject *)value
 {
     if (value == nil) {
